@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { ApiClientService } from './services/api-client.service';
 import { MarketDataTestService } from './services/market-data-test.service';
+import { WebSocketClientService } from './services/websocket-client.service';
+import { WebSocketTestService } from './services/websocket-test.service';
 
 @Module({
   imports: [
@@ -18,10 +20,14 @@ import { MarketDataTestService } from './services/market-data-test.service';
   providers: [
     ApiClientService,
     MarketDataTestService,
+    WebSocketClientService,
+    WebSocketTestService,
   ],
   exports: [
     ApiClientService,
     MarketDataTestService,
+    WebSocketClientService,
+    WebSocketTestService,
   ],
 })
 export class AppModule {} 
