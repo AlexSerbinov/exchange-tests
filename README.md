@@ -92,12 +92,31 @@ npm run start
 ### 3. Як запустити тестування 10 разів
 ```bash
 # Автоматичний запуск 10 разів з паузою
+npm run test:run:10x
+
+# Або альтернативно:
+./run-tests-10x.sh
+
+# Або мануально:
 for i in {1..10}; do
   echo "=== Test Run #$i ==="
   npm run test:run
   echo "Completed run $i/10"
   sleep 5
 done
+```
+
+### 4. GitHub Repository
+🔗 **Репозиторій**: https://github.com/AlexSerbinov/exchange-tests.git
+
+```bash
+# Клонування проєкту
+git clone https://github.com/AlexSerbinov/exchange-tests.git
+cd exchange-tests
+
+# Встановлення та запуск
+npm install
+npm run test:run
 ```
 
 ## 📊 Результати тестування
