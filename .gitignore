@@ -30,9 +30,9 @@ Thumbs.db
 logs/
 *.log
 
-# Reports
-reports/
-*.json
+# Test Reports (but allow example reports)
+reports/*.json
+!reports/example-report.json
 
 # Testing
 coverage/
