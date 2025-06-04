@@ -136,6 +136,7 @@ export interface TestSummary {
 export interface TestReport {
   summary: TestSummary;
   exchangeResults: ExchangeTestResult[];
+  directTestResults?: { [exchangeName: string]: TestResult };
   configuration: {
     apiBaseUrl: string;
     performanceTarget: number;

@@ -36,8 +36,12 @@ export class MarketDataTestService {
     const readinessResult = await this.apiClient.testReadiness();
     this.logger.log(`System readiness check: ${readinessResult.success ? 'PASSED' : 'FAILED'}`);
 
-    // Test all CEX exchanges
+    // Test all CEX exchanges through our API
     const cexResults = await this.testAllCexExchanges();
+    
+    // Test exchanges directly for comparison
+    this.logger.log('Testing exchanges directly for performance comparison...');
+    const directResults = await this.testAllExchangesDirectly();
     
     // TODO: Add DEX testing in next phase
     
@@ -51,6 +55,7 @@ export class MarketDataTestService {
     const report: TestReport = {
       summary,
       exchangeResults: cexResults,
+      directTestResults: directResults, // Add direct test results
       configuration: {
         apiBaseUrl: appConfig.api.baseUrl,
         performanceTarget: appConfig.performance.targetMs,
@@ -278,5 +283,24 @@ export class MarketDataTestService {
   async testConnectivity(): Promise<boolean> {
     const healthResult = await this.apiClient.testHealth();
     return healthResult.success;
+  }
+
+  /**
+   * Test all exchanges directly (bypassing our API)
+   */
+  private async testAllExchangesDirectly(): Promise<{ [key: string]: TestResult }> {
+    const directResults: { [key: string]: TestResult } = {};
+
+    for (const exchange of CEX_EXCHANGES) {
+      try {
+        directResults[exchange] = await this.apiClient.testExchangeDirectly(exchange);
+        this.logger.log(`Direct test ${exchange}: ${directResults[exchange].success ? 'SUCCESS' : 'FAILED'} (${directResults[exchange].responseTime}ms)`);
+      } catch (error) {
+        this.logger.error(`Direct test failed for ${exchange}:`, error);
+        directResults[exchange] = this.createErrorResult(error);
+      }
+    }
+
+    return directResults;
   }
 } 

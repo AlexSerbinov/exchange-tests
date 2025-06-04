@@ -157,4 +157,47 @@ export class ApiClientService {
       'readiness'
     );
   }
+
+  /**
+   * Test exchange directly (bypassing our API) for comparison
+   */
+  async testExchangeDirectly(exchange: CexExchange): Promise<TestResult> {
+    const directUrls: Record<CexExchange, string> = {
+      'htx': 'https://api.huobi.pro/market/detail/merged?symbol=btcusdt',
+      'mexc': 'https://api.mexc.com/api/v3/ticker/24hr?symbol=BTCUSDT',
+      'gateio': 'https://api.gateio.ws/api/v4/spot/tickers?currency_pair=BTC_USDT',
+      'kucoin': 'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=BTC-USDT',
+      'xt': 'https://sapi.xt.com/v4/public/ticker?symbol=btc_usdt',
+      'lbank': 'https://api.lbank.info/v2/ticker.do?symbol=btc_usdt',
+      'bitmart': 'https://api-cloud.bitmart.com/spot/v1/ticker?symbol=BTC_USDT',
+      'phemex': 'https://api.phemex.com/md/ticker/24hr?symbol=BTCUSDT',
+      'bitget': 'https://api.bitget.com/api/spot/v1/market/ticker?symbol=BTCUSDT',
+      'bybit': 'https://api.bybit.com/v5/market/tickers?category=spot&symbol=BTCUSDT',
+      'bingx': 'https://open-api.bingx.com/openApi/spot/v1/ticker/24hr?symbol=BTC-USDT'
+    };
+
+    const directClient = axios.create({
+      timeout: 10000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; ExchangeTestBot/1.0)',
+        'Accept': 'application/json'
+      }
+    });
+
+    const url = directUrls[exchange];
+    if (!url) {
+      return {
+        success: false,
+        responseTime: 0,
+        error: 'Direct URL not configured for this exchange',
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    return this.executeRequest<any>(
+      () => directClient.get(url),
+      exchange,
+      'direct-test'
+    );
+  }
 } 
