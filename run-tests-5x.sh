@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo "🚀 Starting 10x Market Data API Tests"
+echo "🚀 Starting 5x Market Data API Tests"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-for i in {1..10}; do
+for i in {1..5}; do
     echo ""
-    echo "🔄 === Test Run #$i/10 ==="
+    echo "🔄 === Test Run #$i/5 ==="
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
     # Запуск тестів
@@ -19,7 +19,7 @@ for i in {1..10}; do
     fi
     
     # Пауза між тестами (крім останнього)
-    if [ $i -lt 10 ]; then
+    if [ $i -lt 5 ]; then
         echo "⏳ Waiting 5 seconds before next run..."
         sleep 5
     fi
@@ -27,6 +27,6 @@ done
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎉 All 10 test runs completed!"
+echo "🎉 All 5 test runs completed!"
 echo "📁 Check ./reports/ directory for detailed JSON reports"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" 

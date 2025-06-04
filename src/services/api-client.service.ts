@@ -5,7 +5,8 @@ import {
   PriceResponse, 
   OrderbookResponse, 
   TradesResponse, 
-  TestResult 
+  TestResult,
+  HistoricalDataResponse
 } from '../types/api.types';
 import { CexExchange, DexExchange } from '../config/exchanges.config';
 
@@ -93,6 +94,45 @@ export class ApiClientService {
   }
 
   /**
+   * Test CEX orderbook endpoint: /get-orderbook/{base}/{quote}/{depth}/{exchange}
+   */
+  async testCexOrderbook(base: string, quote: string, depth: number, exchange: CexExchange): Promise<TestResult> {
+    const endpoint = `/get-orderbook/${base}/${quote}/${depth}/${exchange}`;
+    
+    return this.executeRequest<OrderbookResponse>(
+      () => this.httpClient.get(endpoint),
+      exchange,
+      'orderbook'
+    );
+  }
+
+  /**
+   * Test CEX trades endpoint: /get-trades/{base}/{quote}/{exchange}
+   */
+  async testCexTrades(base: string, quote: string, exchange: CexExchange): Promise<TestResult> {
+    const endpoint = `/get-trades/${base}/${quote}/${exchange}`;
+    
+    return this.executeRequest<TradesResponse>(
+      () => this.httpClient.get(endpoint),
+      exchange,
+      'trades'
+    );
+  }
+
+  /**
+   * Test CEX history endpoint: /get-history/cex/{tickerA}/{tickerB}/{timeframe}/{cexExchange}
+   */
+  async testCexHistory(tickerA: string, tickerB: string, timeframe: string, exchange: CexExchange): Promise<TestResult> {
+    const endpoint = `/get-history/cex/${tickerA}/${tickerB}/${timeframe}/${exchange}`;
+    
+    return this.executeRequest<HistoricalDataResponse>(
+      () => this.httpClient.get(endpoint),
+      exchange,
+      'history'
+    );
+  }
+
+  /**
    * Test health endpoint: /health
    */
   async testHealth(): Promise<TestResult> {
@@ -102,6 +142,19 @@ export class ApiClientService {
       () => this.httpClient.get(endpoint),
       'system',
       'health'
+    );
+  }
+
+  /**
+   * Test readiness endpoint: /readiness
+   */
+  async testReadiness(): Promise<TestResult> {
+    const endpoint = '/readiness';
+    
+    return this.executeRequest<any>(
+      () => this.httpClient.get(endpoint),
+      'system',
+      'readiness'
     );
   }
 } 

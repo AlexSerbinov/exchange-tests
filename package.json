@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:market-data": "nest start --watch",
     "test:run": "ts-node src/main.ts",
-    "test:run:10x": "./run-tests-10x.sh",
+    "test:run:5x": "./run-tests-5x.sh",
     "report:generate": "ts-node src/scripts/generate-report.ts"
   },
   "dependencies": {

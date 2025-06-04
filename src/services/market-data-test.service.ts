@@ -32,6 +32,10 @@ export class MarketDataTestService {
     const healthResult = await this.apiClient.testHealth();
     this.logger.log(`System health check: ${healthResult.success ? 'PASSED' : 'FAILED'}`);
 
+    // Test readiness endpoint
+    const readinessResult = await this.apiClient.testReadiness();
+    this.logger.log(`System readiness check: ${readinessResult.success ? 'PASSED' : 'FAILED'}`);
+
     // Test all CEX exchanges
     const cexResults = await this.testAllCexExchanges();
     
@@ -67,7 +71,7 @@ export class MarketDataTestService {
   }
 
   /**
-   * Test all CEX exchanges with all test pairs
+   * Test all CEX exchanges with all test pairs and endpoints
    */
   private async testAllCexExchanges(): Promise<ExchangeTestResult[]> {
     const results: ExchangeTestResult[] = [];
@@ -85,7 +89,7 @@ export class MarketDataTestService {
   }
 
   /**
-   * Test a single CEX exchange with primary test pair
+   * Test a single CEX exchange with multiple endpoints
    */
   private async testCexExchange(exchange: CexExchange): Promise<ExchangeTestResult> {
     const primaryPair = CEX_TEST_PAIRS[0]; // BTC/USDT as primary test
@@ -100,12 +104,45 @@ export class MarketDataTestService {
       );
     } catch (error) {
       this.logger.error(`Price test failed for ${exchange}:`, error);
-      results.price = {
-        success: false,
-        responseTime: 0,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      };
+      results.price = this.createErrorResult(error);
+    }
+
+    // Test orderbook endpoint (depth 10)
+    try {
+      results.orderbook = await this.apiClient.testCexOrderbook(
+        primaryPair.base,
+        primaryPair.quote,
+        10, // depth
+        exchange
+      );
+    } catch (error) {
+      this.logger.error(`Orderbook test failed for ${exchange}:`, error);
+      results.orderbook = this.createErrorResult(error);
+    }
+
+    // Test trades endpoint
+    try {
+      results.trades = await this.apiClient.testCexTrades(
+        primaryPair.base,
+        primaryPair.quote,
+        exchange
+      );
+    } catch (error) {
+      this.logger.error(`Trades test failed for ${exchange}:`, error);
+      results.trades = this.createErrorResult(error);
+    }
+
+    // Test history endpoint (1H timeframe)
+    try {
+      results.history = await this.apiClient.testCexHistory(
+        primaryPair.base,
+        primaryPair.quote,
+        '1H', // timeframe
+        exchange
+      );
+    } catch (error) {
+      this.logger.error(`History test failed for ${exchange}:`, error);
+      results.history = this.createErrorResult(error);
     }
 
     // Calculate summary
@@ -130,6 +167,18 @@ export class MarketDataTestService {
     };
 
     return exchangeResult;
+  }
+
+  /**
+   * Create error result for failed tests
+   */
+  private createErrorResult(error: any): TestResult {
+    return {
+      success: false,
+      responseTime: 0,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    };
   }
 
   /**

@@ -10,7 +10,7 @@ export const appConfig = {
   },
   performance: {
     targetMs: parseInt(process.env.PERFORMANCE_TARGET_MS || '5000'),
-    warningMs: parseInt(process.env.PERFORMANCE_WARNING_MS || '3000'),
+    warningMs: parseInt(process.env.PERFORMANCE_WARNING_MS || '2000'),
   },
   reporting: {
     outputDir: process.env.REPORT_OUTPUT_DIR || './reports',
