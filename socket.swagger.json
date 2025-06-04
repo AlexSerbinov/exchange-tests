@@ -1,0 +1,193 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+      "/get-price/{base}/{quote}/{exchange}": {
+        "get": {
+          "description": "Retrieves the latest price for a trading pair symbol from a CEX or DEX and initiates WebSocket subscription for real-time updates.",
+          "operationId": "Y_getPrice",
+          "parameters": [
+            {
+              "name": "base",
+              "required": true,
+              "in": "path",
+              "description": "Base asset symbol (e.g., BTC, ETH, USDC)",
+              "schema": {
+                "example": "BTC",
+                "type": "string"
+              }
+            },
+            {
+              "name": "quote",
+              "required": true,
+              "in": "path",
+              "description": "Quote asset symbol (e.g., USDT, USD, ETH)",
+              "schema": {
+                "example": "USDT",
+                "type": "string"
+              }
+            },
+            {
+              "name": "exchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the exchange (CEX or DEX)",
+              "schema": {
+                "enum": [
+                  "htx",
+                  "mexc",
+                  "gateio",
+                  "kucoin",
+                  "xt",
+                  "lbank",
+                  "bitmart",
+                  "phemex",
+                  "bitget",
+                  "bybit",
+                  "bingx",
+                  "uniswap-v2",
+                  "uniswap-v3",
+                  "pancakeswap",
+                  "raydium",
+                  "ston"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get latest price for a symbol and subscribe to WebSocket updates",
+          "tags": [
+            "WebSocket Service"
+          ]
+        }
+      },
+      "/get-orderbook/{base}/{quote}/{depth}/{exchange}": {
+        "get": {
+          "description": "Retrieves the orderbook for a trading pair symbol from a centralized exchange with specified depth and initiates WebSocket subscription for real-time updates.",
+          "operationId": "Y_getOrderbook",
+          "parameters": [
+            {
+              "name": "base",
+              "required": true,
+              "in": "path",
+              "description": "Base asset symbol (e.g., BTC, ETH, USDC)",
+              "schema": {
+                "example": "BTC",
+                "type": "string"
+              }
+            },
+            {
+              "name": "quote",
+              "required": true,
+              "in": "path",
+              "description": "Quote asset symbol (e.g., USDT, USD, ETH)",
+              "schema": {
+                "example": "USDT",
+                "type": "string"
+              }
+            },
+            {
+              "name": "depth",
+              "required": true,
+              "in": "path",
+              "description": "Depth of the orderbook (number of price levels)",
+              "schema": {
+                "example": 10,
+                "type": "number"
+              }
+            },
+            {
+              "name": "exchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the centralized exchange (CEX)",
+              "schema": {
+                "enum": [
+                  "htx",
+                  "mexc",
+                  "gateio",
+                  "kucoin",
+                  "xt",
+                  "lbank",
+                  "bitmart",
+                  "phemex",
+                  "bitget",
+                  "bybit",
+                  "bingx"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get orderbook for a symbol and subscribe to WebSocket updates",
+          "tags": [
+            "WebSocket Service"
+          ]
+        }
+      },
+      "/health": {
+        "get": {
+          "description": "Returns the health status of the WebSocket service and its dependencies.",
+          "operationId": "Y_getHealth",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get health status of the WebSocket service",
+          "tags": [
+            "WebSocket Service"
+          ]
+        }
+      },
+      "/readiness": {
+        "get": {
+          "description": "Returns the readiness status of the WebSocket service.",
+          "operationId": "Y_getReady",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get readiness status of the WebSocket service",
+          "tags": [
+            "WebSocket Service"
+          ]
+        }
+      }
+    },
+    "info": {
+      "title": "WebSocket Service",
+      "description": "Real-time market data WebSocket service",
+      "version": "1.0",
+      "contact": {}
+    },
+    "tags": [
+      {
+        "name": "websocket",
+        "description": ""
+      }
+    ],
+    "servers": [],
+    "components": {
+      "securitySchemes": {
+        "bearer": {
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "type": "http"
+        }
+      },
+      "schemas": {}
+    }
+  }

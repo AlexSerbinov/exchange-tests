@@ -6,7 +6,8 @@ import {
   OrderbookResponse, 
   TradesResponse, 
   TestResult,
-  HistoricalDataResponse
+  HistoricalDataResponse,
+  PoolDataResponse
 } from '../types/api.types';
 import { CexExchange, DexExchange } from '../config/exchanges.config';
 
@@ -129,6 +130,45 @@ export class ApiClientService {
       () => this.httpClient.get(endpoint),
       exchange,
       'history'
+    );
+  }
+
+  /**
+   * Test DEX price endpoint: /get-price/dex/{tokenAddress}/{poolAddress}/{chainId}/{exchange}
+   */
+  async testDexPrice(tokenAddress: string, poolAddress: string, chainId: string, exchange: DexExchange): Promise<TestResult> {
+    const endpoint = `/get-price/dex/${tokenAddress}/${poolAddress}/${chainId}/${exchange}`;
+    
+    return this.executeRequest<PriceResponse>(
+      () => this.httpClient.get(endpoint),
+      exchange,
+      'dex-price'
+    );
+  }
+
+  /**
+   * Test DEX trades endpoint: /get-trades/dex/{tokenAddress}/{poolAddress}/{chainId}/{exchange}
+   */
+  async testDexTrades(tokenAddress: string, poolAddress: string, chainId: string, exchange: DexExchange): Promise<TestResult> {
+    const endpoint = `/get-trades/dex/${tokenAddress}/${poolAddress}/${chainId}/${exchange}`;
+    
+    return this.executeRequest<TradesResponse>(
+      () => this.httpClient.get(endpoint),
+      exchange,
+      'dex-trades'
+    );
+  }
+
+  /**
+   * Test DEX pool data endpoint: /get-pool-data/dex/{tokenAddress}/{poolAddress}/{chainId}/{exchange}
+   */
+  async testDexPoolData(tokenAddress: string, poolAddress: string, chainId: string, exchange: DexExchange): Promise<TestResult> {
+    const endpoint = `/get-pool-data/dex/${tokenAddress}/${poolAddress}/${chainId}/${exchange}`;
+    
+    return this.executeRequest<PoolDataResponse>(
+      () => this.httpClient.get(endpoint),
+      exchange,
+      'dex-pool-data'
     );
   }
 

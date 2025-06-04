@@ -1,0 +1,603 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+      "/get-price/{base}/{quote}/{exchange}": {
+        "get": {
+          "description": "Retrieves the latest price for a trading pair symbol from a CEX or DEX.",
+          "operationId": "rv_getPrice",
+          "parameters": [
+            {
+              "name": "base",
+              "required": true,
+              "in": "path",
+              "description": "Base asset symbol (e.g., BTC, ETH, USDC)",
+              "schema": {
+                "example": "BTC",
+                "type": "string"
+              }
+            },
+            {
+              "name": "quote",
+              "required": true,
+              "in": "path",
+              "description": "Quote asset symbol (e.g., USDT, USD, ETH)",
+              "schema": {
+                "example": "USDT",
+                "type": "string"
+              }
+            },
+            {
+              "name": "exchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the exchange (CEX or DEX)",
+              "schema": {
+                "enum": [
+                  "htx",
+                  "mexc",
+                  "gateio",
+                  "kucoin",
+                  "xt",
+                  "lbank",
+                  "bitmart",
+                  "phemex",
+                  "bitget",
+                  "bybit",
+                  "bingx",
+                  "uniswap-v2",
+                  "uniswap-v3",
+                  "pancakeswap",
+                  "raydium",
+                  "ston"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get latest price and volume for a symbol",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/get-orderbook/{base}/{quote}/{depth}/{exchange}": {
+        "get": {
+          "description": "Retrieves the orderbook for a trading pair symbol from a centralized exchange with specified depth.",
+          "operationId": "rv_getOrderbook",
+          "parameters": [
+            {
+              "name": "base",
+              "required": true,
+              "in": "path",
+              "description": "Base asset symbol (e.g., BTC, ETH, USDC)",
+              "schema": {
+                "example": "BTC",
+                "type": "string"
+              }
+            },
+            {
+              "name": "quote",
+              "required": true,
+              "in": "path",
+              "description": "Quote asset symbol (e.g., USDT, USD, ETH)",
+              "schema": {
+                "example": "USDT",
+                "type": "string"
+              }
+            },
+            {
+              "name": "depth",
+              "required": true,
+              "in": "path",
+              "description": "Depth of the orderbook (number of price levels)",
+              "schema": {
+                "example": 10,
+                "type": "number"
+              }
+            },
+            {
+              "name": "exchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the centralized exchange (CEX)",
+              "schema": {
+                "enum": [
+                  "htx",
+                  "mexc",
+                  "gateio",
+                  "kucoin",
+                  "xt",
+                  "lbank",
+                  "bitmart",
+                  "phemex",
+                  "bitget",
+                  "bybit",
+                  "bingx"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get orderbook for a symbol",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/get-trades/{base}/{quote}/{exchange}": {
+        "get": {
+          "description": "Retrieves the recent trades for a trading pair symbol from a CEX or DEX.",
+          "operationId": "rv_getTrades",
+          "parameters": [
+            {
+              "name": "base",
+              "required": true,
+              "in": "path",
+              "description": "Base asset symbol (e.g., BTC, ETH, USDC)",
+              "schema": {
+                "example": "BTC",
+                "type": "string"
+              }
+            },
+            {
+              "name": "quote",
+              "required": true,
+              "in": "path",
+              "description": "Quote asset symbol (e.g., USDT, USD, ETH)",
+              "schema": {
+                "example": "USDT",
+                "type": "string"
+              }
+            },
+            {
+              "name": "exchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the exchange (CEX or DEX)",
+              "schema": {
+                "enum": [
+                  "htx",
+                  "mexc",
+                  "gateio",
+                  "kucoin",
+                  "xt",
+                  "lbank",
+                  "bitmart",
+                  "phemex",
+                  "bitget",
+                  "bybit",
+                  "bingx",
+                  "uniswap-v2",
+                  "uniswap-v3",
+                  "pancakeswap",
+                  "raydium",
+                  "ston"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get recent trades for a symbol",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/get-trades/dex/{tokenAddress}/{poolAddress}/{chainId}/{dexExchange}": {
+        "get": {
+          "description": "Retrieves recent trades for a DEX trading pair using token addresses, chain ID, and DEX exchange.",
+          "operationId": "rv_getDexTrades",
+          "parameters": [
+            {
+              "name": "tokenAddress",
+              "required": true,
+              "in": "path",
+              "description": "First token address (e.g., USDC)",
+              "schema": {
+                "example": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "type": "string"
+              }
+            },
+            {
+              "name": "poolAddress",
+              "required": true,
+              "in": "path",
+              "description": "DEX pool address",
+              "schema": {
+                "example": "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc",
+                "type": "string"
+              }
+            },
+            {
+              "name": "chainId",
+              "required": true,
+              "in": "path",
+              "description": "Blockchain chain ID (e.g., 1 for Ethereum, 56 for BSC)",
+              "schema": {
+                "example": "1",
+                "type": "string"
+              }
+            },
+            {
+              "name": "dexExchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the decentralized exchange (DEX)",
+              "schema": {
+                "enum": [
+                  "uniswap-v2",
+                  "uniswap-v3",
+                  "pancakeswap",
+                  "raydium",
+                  "ston"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get recent trades for a DEX trading pair by token addresses",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/get-price/dex/{tokenAddress}/{poolAddress}/{chainId}/{exchangeName}": {
+        "get": {
+          "description": "Retrieves the latest price for a token in a specific DEX pool using token and pool addresses.",
+          "operationId": "rv_getDexPrice",
+          "parameters": [
+            {
+              "name": "tokenAddress",
+              "required": true,
+              "in": "path",
+              "description": "First token address (e.g., USDC)",
+              "schema": {
+                "example": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "type": "string"
+              }
+            },
+            {
+              "name": "poolAddress",
+              "required": true,
+              "in": "path",
+              "description": "DEX pool address",
+              "schema": {
+                "example": "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc",
+                "type": "string"
+              }
+            },
+            {
+              "name": "chainId",
+              "required": true,
+              "in": "path",
+              "description": "Blockchain chain ID (e.g., 1 for Ethereum, 56 for BSC)",
+              "schema": {
+                "example": "1",
+                "type": "string"
+              }
+            },
+            {
+              "name": "exchangeName",
+              "required": true,
+              "in": "path",
+              "description": "Name of the decentralized exchange (DEX)",
+              "schema": {
+                "enum": [
+                  "uniswap-v2",
+                  "uniswap-v3",
+                  "pancakeswap",
+                  "raydium",
+                  "ston"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get latest price for a token in a DEX pool",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/get-pool-data/dex/{tokenAddress}/{poolAddress}/{chainId}/{exchangeName}": {
+        "get": {
+          "description": "Retrieves liquidity pool data for a specific DEX pool using token and pool addresses.",
+          "operationId": "rv_getDexPoolData",
+          "parameters": [
+            {
+              "name": "tokenAddress",
+              "required": true,
+              "in": "path",
+              "description": "First token address (e.g., USDC)",
+              "schema": {
+                "example": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                "type": "string"
+              }
+            },
+            {
+              "name": "poolAddress",
+              "required": true,
+              "in": "path",
+              "description": "DEX pool address",
+              "schema": {
+                "example": "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc",
+                "type": "string"
+              }
+            },
+            {
+              "name": "chainId",
+              "required": true,
+              "in": "path",
+              "description": "Blockchain chain ID (e.g., 1 for Ethereum, 56 for BSC)",
+              "schema": {
+                "example": "1",
+                "type": "string"
+              }
+            },
+            {
+              "name": "exchangeName",
+              "required": true,
+              "in": "path",
+              "description": "Name of the decentralized exchange (DEX)",
+              "schema": {
+                "enum": [
+                  "uniswap-v2",
+                  "uniswap-v3",
+                  "pancakeswap",
+                  "raydium",
+                  "ston"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get liquidity pool data for a DEX pool",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/get-history/dex/{address1}/{address2}/{chainId}/{timeframe}/{dexExchange}": {
+        "get": {
+          "description": "Retrieves historical OHLCV data for a DEX trading pair using token addresses, chain ID, DEX exchange, and timeframe.",
+          "operationId": "rv_getDexHistory",
+          "parameters": [
+            {
+              "name": "address1",
+              "required": true,
+              "in": "path",
+              "description": "Address of the first token",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "address2",
+              "required": true,
+              "in": "path",
+              "description": "Address of the second token",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "chainId",
+              "required": true,
+              "in": "path",
+              "description": "Blockchain chain ID (e.g., 1 for Ethereum, 56 for BSC)",
+              "schema": {
+                "example": "1",
+                "type": "string"
+              }
+            },
+            {
+              "name": "dexExchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the decentralized exchange (DEX)",
+              "schema": {
+                "enum": [
+                  "uniswap-v2",
+                  "uniswap-v3",
+                  "pancakeswap",
+                  "raydium",
+                  "ston"
+                ],
+                "type": "string"
+              }
+            },
+            {
+              "name": "timeframe",
+              "required": true,
+              "in": "path",
+              "description": "Timeframe (e.g., 1MIN, 5MIN, 1H, 1D)",
+              "schema": {
+                "enum": [
+                  "1MIN",
+                  "5MIN",
+                  "15MIN",
+                  "30MIN",
+                  "1H",
+                  "4H",
+                  "1D",
+                  "1W",
+                  "1M"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get historical OHLCV data for a DEX trading pair",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/get-history/cex/{tickerA}/{tickerB}/{timeframe}/{cexExchange}": {
+        "get": {
+          "description": "Retrieves historical OHLCV data for a CEX trading pair using ticker symbols, exchange, and timeframe.",
+          "operationId": "rv_getCexHistory",
+          "parameters": [
+            {
+              "name": "tickerA",
+              "required": true,
+              "in": "path",
+              "description": "Ticker symbol of the first asset",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "tickerB",
+              "required": true,
+              "in": "path",
+              "description": "Ticker symbol of the second asset",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "cexExchange",
+              "required": true,
+              "in": "path",
+              "description": "Name of the centralized exchange (CEX) for historical data",
+              "schema": {
+                "enum": [
+                  "htx",
+                  "mexc",
+                  "gateio",
+                  "kucoin",
+                  "xt",
+                  "lbank",
+                  "bitmart",
+                  "phemex",
+                  "bitget",
+                  "bybit",
+                  "bingx"
+                ],
+                "type": "string"
+              }
+            },
+            {
+              "name": "timeframe",
+              "required": true,
+              "in": "path",
+              "description": "Timeframe (e.g., 1MIN, 5MIN, 1H, 1D)",
+              "schema": {
+                "enum": [
+                  "1MIN",
+                  "5MIN",
+                  "15MIN",
+                  "30MIN",
+                  "1H",
+                  "4H",
+                  "1D",
+                  "1W",
+                  "1M"
+                ],
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get historical OHLCV data for a CEX trading pair",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/health": {
+        "get": {
+          "description": "Returns the health status of the market data service and its dependencies.",
+          "operationId": "rv_getHealth",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get health status of the service",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      },
+      "/readiness": {
+        "get": {
+          "description": "Returns the readiness status of the market data service.",
+          "operationId": "rv_getReady",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "summary": "Get readiness status of the service",
+          "tags": [
+            "Market Data"
+          ]
+        }
+      }
+    },
+    "info": {
+      "title": "Market data service",
+      "description": "The Market data service for TMB Trading Platform",
+      "version": "1.0",
+      "contact": {}
+    },
+    "tags": [
+      {
+        "name": "market-data",
+        "description": ""
+      }
+    ],
+    "servers": [],
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "Bearer"
+        }
+      },
+      "schemas": {}
+    }
+  }

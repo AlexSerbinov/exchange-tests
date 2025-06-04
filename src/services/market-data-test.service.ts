@@ -2,16 +2,20 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ApiClientService } from './api-client.service';
 import { 
   CEX_EXCHANGES, 
+  DEX_EXCHANGES,
   CEX_TEST_PAIRS, 
+  DEX_TEST_POOLS,
   EXCHANGE_NAMES,
-  CexExchange 
+  CexExchange,
+  DexExchange 
 } from '../config/exchanges.config';
 import { 
   TestResult, 
   ExchangeTestResult, 
   TestSummary,
   TestReport,
-  TradingPair 
+  TradingPair,
+  DexPool 
 } from '../types/api.types';
 import { appConfig } from '../config/app.config';
 
@@ -39,22 +43,26 @@ export class MarketDataTestService {
     // Test all CEX exchanges through our API
     const cexResults = await this.testAllCexExchanges();
     
-    // Test exchanges directly for comparison
+    // Test all DEX exchanges through our API
+    const dexResults = await this.testAllDexExchanges();
+    
+    // Test exchanges directly for comparison (CEX only)
     this.logger.log('Testing exchanges directly for performance comparison...');
     const directResults = await this.testAllExchangesDirectly();
-    
-    // TODO: Add DEX testing in next phase
     
     const endTime = Date.now();
     const testDuration = endTime - startTime;
 
+    // Combine CEX and DEX results
+    const allResults = [...cexResults, ...dexResults];
+
     // Generate summary
-    const summary = this.generateTestSummary(cexResults);
+    const summary = this.generateTestSummary(allResults);
     
     // Create final report
     const report: TestReport = {
       summary,
-      exchangeResults: cexResults,
+      exchangeResults: allResults,
       directTestResults: directResults, // Add direct test results
       configuration: {
         apiBaseUrl: appConfig.api.baseUrl,
@@ -85,6 +93,24 @@ export class MarketDataTestService {
       this.logger.log(`Testing CEX exchange: ${EXCHANGE_NAMES[exchange]}`);
       
       const exchangeResult = await this.testCexExchange(exchange);
+      results.push(exchangeResult);
+      
+      this.logger.log(`${exchange}: ${exchangeResult.summary.passedTests}/${exchangeResult.summary.totalTests} tests passed`);
+    }
+
+    return results;
+  }
+
+  /**
+   * Test all DEX exchanges with test pools and endpoints
+   */
+  private async testAllDexExchanges(): Promise<ExchangeTestResult[]> {
+    const results: ExchangeTestResult[] = [];
+
+    for (const exchange of DEX_EXCHANGES) {
+      this.logger.log(`Testing DEX exchange: ${EXCHANGE_NAMES[exchange]}`);
+      
+      const exchangeResult = await this.testDexExchange(exchange);
       results.push(exchangeResult);
       
       this.logger.log(`${exchange}: ${exchangeResult.summary.passedTests}/${exchangeResult.summary.totalTests} tests passed`);
@@ -172,6 +198,121 @@ export class MarketDataTestService {
     };
 
     return exchangeResult;
+  }
+
+  /**
+   * Test a single DEX exchange with multiple endpoints
+   */
+  private async testDexExchange(exchange: DexExchange): Promise<ExchangeTestResult> {
+    const results: { [key: string]: TestResult } = {};
+    
+    // Get the first available pool for this exchange
+    const testPool = this.getTestPoolForExchange(exchange);
+    
+    if (!testPool) {
+      this.logger.warn(`No test pool configured for DEX exchange: ${exchange}`);
+      return {
+        exchange,
+        displayName: EXCHANGE_NAMES[exchange],
+        endpoints: {},
+        summary: {
+          totalTests: 0,
+          passedTests: 0,
+          failedTests: 0,
+          averageResponseTime: 0,
+          success: false
+        }
+      };
+    }
+
+    // Test DEX price endpoint
+    try {
+      results.price = await this.apiClient.testDexPrice(
+        testPool.tokenAddress,
+        testPool.poolAddress,
+        this.getChainIdForExchange(exchange),
+        exchange
+      );
+    } catch (error) {
+      this.logger.error(`DEX price test failed for ${exchange}:`, error);
+      results.price = this.createErrorResult(error);
+    }
+
+    // Test DEX trades endpoint
+    try {
+      results.trades = await this.apiClient.testDexTrades(
+        testPool.tokenAddress,
+        testPool.poolAddress,
+        this.getChainIdForExchange(exchange),
+        exchange
+      );
+    } catch (error) {
+      this.logger.error(`DEX trades test failed for ${exchange}:`, error);
+      results.trades = this.createErrorResult(error);
+    }
+
+    // Test DEX pool data endpoint
+    try {
+      results.poolData = await this.apiClient.testDexPoolData(
+        testPool.tokenAddress,
+        testPool.poolAddress,
+        this.getChainIdForExchange(exchange),
+        exchange
+      );
+    } catch (error) {
+      this.logger.error(`DEX pool data test failed for ${exchange}:`, error);
+      results.poolData = this.createErrorResult(error);
+    }
+
+    // Calculate summary
+    const testResults = Object.values(results);
+    const passedTests = testResults.filter(r => r.success).length;
+    const totalTests = testResults.length;
+    const averageResponseTime = testResults.length > 0 
+      ? testResults.reduce((sum, r) => sum + r.responseTime, 0) / testResults.length 
+      : 0;
+
+    const exchangeResult: ExchangeTestResult = {
+      exchange,
+      displayName: EXCHANGE_NAMES[exchange],
+      endpoints: results,
+      summary: {
+        totalTests,
+        passedTests,
+        failedTests: totalTests - passedTests,
+        averageResponseTime,
+        success: passedTests === totalTests
+      }
+    };
+
+    return exchangeResult;
+  }
+
+  /**
+   * Get test pool for DEX exchange
+   */
+  private getTestPoolForExchange(exchange: DexExchange): DexPool | null {
+    // Find first pool that matches the exchange
+    for (const [chainKey, chainData] of Object.entries(DEX_TEST_POOLS)) {
+      const pool = chainData.pools.find(p => p.exchange === exchange);
+      if (pool) {
+        return pool;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Get chain ID for DEX exchange
+   */
+  private getChainIdForExchange(exchange: DexExchange): string {
+    for (const [chainKey, chainData] of Object.entries(DEX_TEST_POOLS)) {
+      const hasExchange = chainData.pools.some(p => p.exchange === exchange);
+      if (hasExchange) {
+        return chainData.chainId;
+      }
+    }
+    return '1'; // Default to Ethereum
   }
 
   /**
